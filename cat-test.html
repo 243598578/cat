@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>猫咪匹配测试 - 你最适合养什么猫？</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap");
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#FEF6EC;--bg2:#FFF3E4;--card:#FFFFFF;--card2:#FFF9F3;--border:#F0D9C0;--border2:#E8C99A;--text:#5C3D1E;--text2:#8B6230;--text-dim:#B8926A;--c-orange:#E8701A;--c-peach:#FF9E5E;--c-cream:#FFD4A8;--c-dark:#C8621A;}
+body{font-family:"Noto Sans SC",sans-serif;background-color:#FEF6EC;background-image:repeating-linear-gradient(-45deg,transparent,transparent 28px,rgba(255,180,80,0.06) 28px,rgba(255,180,80,0.06) 29px),repeating-linear-gradient(45deg,transparent,transparent 28px,rgba(232,128,26,0.04) 28px,rgba(232,128,26,0.04) 29px);color:var(--text);min-height:100vh;overflow-x:hidden}
+.paw-bg{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden}
+.paw{position:absolute;font-size:32px;opacity:0;animation:pawFade 9s ease-in-out infinite}
+@keyframes pawFade{0%,100%{opacity:0;transform:translateY(0) rotate(0deg) scale(1)}15%{opacity:0.07;transform:translateY(-15px) rotate(-15deg) scale(1.05)}55%{opacity:0.04;transform:translateY(8px) rotate(10deg) scale(0.9)}}
+.container{max-width:640px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1}
+.header{text-align:center;padding:44px 0 20px;margin-bottom:20px}
+.header-title{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.1;color:var(--c-dark);text-shadow:0 2px 8px rgba(232,112,26,0.15);margin-bottom:10px}
+.header-sub{font-size:12px;color:var(--text-dim);font-weight:400;letter-spacing:3px}
+.prog-wrap{margin-bottom:36px}
+.prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#FF8C00,#FF6B35,#FF9E5E);transition:width .45s cubic-bezier(.4,0,.2,1);width:0%;box-shadow:0 1px 6px rgba(255,140,0,0.4)}
+.prog-label{text-align:center;font-size:11px;color:var(--text-dim);letter-spacing:1px}
+.cat-dims{display:flex;justify-content:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.dim-pill{font-size:10px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;border:1px solid;opacity:0.35;transition:all .3s ease}
+.dim-pill.active{opacity:1;transform:scale(1.08)}
+.dim-pill.done{opacity:0.5}
+.d-a{border-color:#E8701A;color:#E8701A;background:rgba(232,112,26,0.08)}
+.d-b{border-color:#FF6B9D;color:#FF6B9D;background:rgba(255,107,157,0.08)}
+.d-c{border-color:#8B5E3C;color:#8B5E3C;background:rgba(139,94,60,0.08)}
+.d-d{border-color:#4A9E5C;color:#4A9E5C;background:rgba(74,158,92,0.08)}
+.d-e{border-color:#5B8BD4;color:#5B8BD4;background:rgba(91,139,212,0.08)}
+.page{display:none}.page.on{display:block}
+.q-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px 32px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(200,120,40,0.08),0 1px 4px rgba(200,120,40,0.06)}
+.q-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF8C00,#FF6B35,#FF9E5E);border-radius:24px 24px 0 0}
+.q-card .corner-paw{position:absolute;bottom:14px;right:16px;font-size:18px;opacity:0.12}
+.q-num{font-size:11px;font-weight:600;letter-spacing:2.5px;color:var(--text-dim);margin-bottom:14px;text-transform:uppercase}
+.q-text{font-size:19px;font-weight:600;line-height:1.65;color:var(--text)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.opt{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px 18px;cursor:pointer;transition:all .2s ease;text-align:left;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(200,120,40,0.06)}
+.opt:nth-child(1)::after{content:"";position:absolute;inset:0;border-radius:14px;opacity:0;transition:opacity .2s ease;pointer-events:none;background:linear-gradient(135deg,rgba(255,140,0,.08),rgba(255,160,0,.05))}
+.opt:nth-child(2)::after{content:"";position:absolute;inset:0;border-radius:14px;opacity:0;transition:opacity .2s ease;pointer-events:none;background:linear-gradient(135deg,rgba(255,107,157,.08),rgba(255,140,0,.05))}
+.opt:nth-child(3)::after{content:"";position:absolute;inset:0;border-radius:14px;opacity:0;transition:opacity .2s ease;pointer-events:none;background:linear-gradient(135deg,rgba(139,94,60,.08),rgba(255,160,0,.05))}
+.opt:nth-child(4)::after{content:"";position:absolute;inset:0;border-radius:14px;opacity:0;transition:opacity .2s ease;pointer-events:none;background:linear-gradient(135deg,rgba(74,158,92,.08),rgba(74,158,92,.04))}
+.opt:hover{border-color:var(--c-peach);transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,140,0,0.15)}
+.opt:hover::after{opacity:1}
+.opt.sel{border-color:var(--c-orange);background:rgba(255,140,0,0.04);box-shadow:0 0 0 3px rgba(232,112,26,0.12),0 4px 16px rgba(255,140,0,0.12)}
+.opt.sel::after{opacity:1;background:linear-gradient(135deg,rgba(255,140,0,.1),rgba(255,107,157,.06))}
+.opt-letter{font-size:9px;font-weight:700;letter-spacing:1.5px;margin-bottom:7px;opacity:.45;color:var(--text-dim)}
+.opt-text{font-size:13.5px;font-weight:400;line-height:1.55;color:var(--text)}
+.nav-row{display:flex;gap:10px;justify-content:flex-end}
+.btn{padding:11px 24px;border-radius:12px;border:2px solid var(--border2);background:var(--card);color:var(--text);font-size:13px;font-weight:600;font-family:"Noto Sans SC",sans-serif;cursor:pointer;transition:all .2s ease;box-shadow:0 2px 8px rgba(200,120,40,0.06)}
+.btn:hover:not(:disabled){border-color:var(--c-peach);background:rgba(255,180,80,0.06);transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,140,0,0.12)}
+.btn:disabled{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-pri{background:linear-gradient(135deg,#FF8C00,#FF6B35);border-color:#FF6B35;color:#fff;box-shadow:0 4px 16px rgba(255,140,0,0.3)}
+.btn-pri:hover:not(:disabled){background:linear-gradient(135deg,#E8701A,#FF5500);box-shadow:0 6px 20px rgba(255,140,0,0.4)}
+.start{text-align:center;padding:36px 0}
+.start .ico{font-size:80px;margin-bottom:20px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 4px 16px rgba(255,140,0,0.3))}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+.start h2{font-size:26px;font-weight:800;color:var(--c-dark);margin-bottom:13px}
+.start p{font-size:14px;color:var(--text-dim);line-height:1.85;margin-bottom:34px;font-weight:400}
+.start-btn{padding:15px 56px;border-radius:50px;border:none;background:linear-gradient(135deg,#FF8C00,#FF6B35);color:#fff;font-size:15px;font-weight:700;font-family:"Noto Sans SC",sans-serif;cursor:pointer;letter-spacing:1.5px;transition:all .3s ease;box-shadow:0 6px 24px rgba(255,140,0,0.35);position:relative;overflow:hidden}
+.start-btn::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left .5s ease}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(255,140,0,0.45)}
+.start-btn:hover::before{left:100%}
+.res{display:none;text-align:center;padding-top:10px}
+.res.show{display:block}
+.res-lbl{font-size:11px;letter-spacing:3px;color:var(--text-dim);margin-bottom:14px;text-transform:uppercase}
+.res-title{font-size:34px;font-weight:900;color:var(--c-dark);margin-bottom:8px;letter-spacing:-0.5px}
+.res-sub{font-size:14px;color:var(--text-dim);margin-bottom:32px;font-weight:400;line-height:1.7}
+.res-tip{background:rgba(255,180,80,0.1);border:1px solid var(--c-cream);border-radius:14px;padding:16px 20px;text-align:center;margin-bottom:20px}
+.res-tip p{font-size:12.5px;color:var(--text2);font-weight:400;line-height:1.7}
+.cat-ranking{margin-bottom:28px}
+.rank-card{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:20px 24px;margin-bottom:10px;cursor:pointer;transition:all .25s ease;text-align:left;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(200,120,40,0.07)}
+.rank-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(200,120,40,0.14)}
+.rank-card.expanded{box-shadow:0 14px 44px rgba(200,120,40,0.18)}
+.rank-1.rank-card{border-color:#FF9E5E;animation:rankReveal .5s ease both}
+.rank-2.rank-card{border-color:rgba(139,94,60,0.35);animation:rankReveal .6s ease both}
+.rank-3.rank-card{border-color:rgba(74,158,92,0.35);animation:rankReveal .7s ease both}
+@keyframes rankReveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.rank-header{display:flex;align-items:center;gap:14px}
+.rank-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0}
+.rank-1 .rank-badge{background:linear-gradient(135deg,#FF8C00,#FF6B35);color:#fff;box-shadow:0 3px 10px rgba(255,140,0,0.3)}
+.rank-2 .rank-badge{background:linear-gradient(135deg,#8B5E3C,#C8621A);color:#fff;box-shadow:0 3px 10px rgba(139,94,60,0.3)}
+.rank-3 .rank-badge{background:linear-gradient(135deg,#4A9E5C,#6BBF7A);color:#fff;box-shadow:0 3px 10px rgba(74,158,92,0.3)}
+.rank-info{flex:1}
+.rank-cat-name{font-size:17px;font-weight:700;color:var(--text)}
+.rank-cat-origin{font-size:11px;color:var(--text-dim);margin-top:2px}
+.rank-score-row{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.rank-score{font-size:24px;font-weight:900;line-height:1}
+.rank-1 .rank-score{color:#E8701A}
+.rank-2 .rank-score{color:#8B5E3C}
+.rank-3 .rank-score{color:#4A9E5C}
+.rank-pct{font-size:10px;color:var(--text-dim)}
+.score-bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:10px}
+.rank-card.expanded .score-bar-bg{display:none}
+.score-bar-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.rank-1 .score-bar-fill{background:linear-gradient(90deg,#FF8C00,#FF6B35)}
+.rank-2 .score-bar-fill{background:linear-gradient(90deg,#8B5E3C,#C8621A)}
+.rank-3 .score-bar-fill{background:linear-gradient(90deg,#4A9E5C,#6BBF7A)}
+.expand-icon{font-size:13px;color:var(--text-dim);transition:transform .3s ease;flex-shrink:0;padding:4px}
+.rank-card.expanded .expand-icon{transform:rotate(180deg)}
+.rank-detail{display:none;padding-top:16px;border-top:1px solid var(--border);margin-top:16px;text-align:left}
+.rank-card.expanded .rank-detail{display:block}
+.detail-tags{margin-top:14px;margin-bottom:14px}
+.detail-tag{display:inline-block;padding:4px 12px;background:rgba(255,180,80,0.15);border:1px solid var(--c-cream);border-radius:20px;font-size:11px;font-weight:600;color:var(--text2);margin:3px}
+.detail-section{margin-top:14px;text-align:left}
+.detail-section-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase}
+.detail-section-content{font-size:13.5px;line-height:1.85;color:var(--text2);font-weight:400}
+.rank-dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.dim-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:left}
+.dim-lbl{font-size:10px;color:var(--text-dim);margin-bottom:6px;letter-spacing:1px}
+.dim-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.dim-bar-fill{height:100%;border-radius:2px;transition:width .8s ease}
+.btn-res{padding:13px 36px;border-radius:50px;border:2px solid var(--c-peach);background:rgba(255,180,80,0.08);color:var(--c-dark);font-size:14px;font-weight:600;font-family:"Noto Sans SC",sans-serif;cursor:pointer;transition:all .2s ease;margin-top:4px}
+.btn-res:hover{background:linear-gradient(135deg,#FF8C00,#FF6B35);color:#fff;border-color:#FF6B35;transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,140,0,0.3)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--c-cream);border-radius:3px}
+@media(max-width:520px){.header-title{font-size:28px}.q-text{font-size:16px}.opts{grid-template-columns:1fr}.res-title{font-size:26px}.rank-dim-grid{grid-template-columns:1fr}.q-card{padding:28px 22px}}
+</style>
+</head>
+<body>
+<div class="paw-bg" id="pawBg"></div>
+<div class="container">
+  <div class="header"><h1 class="header-title">&#x1F431; 猫咪匹配测试</h1><p class="header-sub">测一测，你最适合养什么猫</p></div>
+  <div class="cat-dims" id="catDims">
+    <span class="dim-pill d-a" id="d-a">活泼型</span>
+    <span class="dim-pill d-b" id="d-b">粘人型</span>
+    <span class="dim-pill d-c" id="d-c">话痨型</span>
+    <span class="dim-pill d-d" id="d-d">打理型</span>
+    <span class="dim-pill d-e" id="d-e">预算型</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" id="pFill"></div></div><div class="prog-label" id="pLbl">0 / 16 题</div></div>
+  <div class="page on" id="startPage"><div class="start"><div class="ico">&#x1F431;</div><h2>你最适合养什么猫？</h2><p>16道趣味测试 · 5大维度分析 · 精准匹配12种猫咪<br>根据你的生活方式与性格，找到命定之猫</p><button class="start-btn" id="startBtn">开始测试 &#x2192;</button></div></div>
+  <div class="page" id="qPage"><div class="q-card"><span class="corner-paw">&#x1F43E;</span><div class="q-num" id="qNum">问题 1 / 16</div><div class="q-text" id="qTxt"></div></div><div class="opts" id="optsCtn"></div><div class="nav-row"><button class="btn" id="prevBtn">&#x2190; 上一题</button><button class="btn btn-pri" id="nextBtn" disabled>下一题 &#x2192;</button></div></div>
+  <div class="page res" id="resPage"><div class="res-lbl">你的最佳猫咪匹配是</div><div class="res-title" id="rTitle"></div><div class="res-sub" id="rSub"></div><div class="res-tip"><p>&#x1F4A1 点击下方卡片展开查看猫咪详细评价</p></div><div class="cat-ranking" id="catRanking"></div><button class="btn-res" id="restartBtn">&#x1F504; 重新测试</button></div>
+</div>
+<script>
+var CATS=[{"id": "british", "name": "英国短毛猫", "emoji": "🐱", "origin": "British Shorthair", "traits": ["安静稳重", "圆润可爱", "适应性一般", "独立性中等", "低维护"], "personality": "性格温顺平静，不爱叫，不搞破坏，喜欢在阳光下打盹。对新环境适应较慢，一旦熟悉就会非常依恋主人。", "suitable": "适合喜欢安静、有稳定作息、居住空间不大的家庭。不需要太多互动，但会默默陪伴。", "tips": "注意控制饮食，英短容易发胖。每周梳毛2-3次即可。", "active": 20, "vocal": 15, "affection": 60, "grooming": 30, "budget": 2, "child": 4, "dims": {"act": 1, "soc": 2, "voi": 1, "car": 2, "mem": 3, "pat": 4, "noz": 3, "gro": 2, "bud": 3}}, {"id": "ragdoll", "name": "布偶猫", "emoji": "🐱", "origin": "Ragdoll", "traits": ["天使性格", "超级粘人", "温顺友好", "亲人猫", "话不多"], "personality": "极度温柔友好，像狗狗一样会迎接主人回家。喜欢被抱、被摸、对孩子特别有耐心。几乎不抓人咬人。", "suitable": "适合有充足陪伴时间、家里有老人或小孩的家庭。需要定期打理毛发，但性格极好。", "tips": "布偶猫晚熟，大约2-3岁才完全定型。长毛需要每天梳毛，否则容易打结。", "active": 35, "vocal": 25, "affection": 95, "grooming": 60, "budget": 3, "child": 5, "dims": {"act": 2, "soc": 5, "voi": 2, "car": 3, "mem": 2, "pat": 5, "noz": 3, "gro": 3, "bud": 3}}, {"id": "siamese", "name": "暹罗猫", "emoji": "🐱", "origin": "Siamese", "traits": ["话痨猫", "极度聪明", "社交达人", "粘人精", "好奇宝宝"], "personality": "非常话痨，会用各种声调跟你聊天。极度粘人，恨不得长在你身上。聪明到可以学会开门、叼球等技能。", "suitable": "适合时间充裕、喜欢互动、家里不冷清的家庭。如果你经常和猫说话，暹罗是你的最佳选择。", "tips": "暹罗猫很怕冷，冬天要注意保暖。好奇心强，容易走丢，家养要封窗。", "active": 75, "vocal": 95, "affection": 90, "grooming": 20, "budget": 2, "child": 4, "dims": {"act": 5, "soc": 5, "voi": 5, "car": 2, "mem": 3, "pat": 3, "noz": 3, "gro": 1, "bud": 3}}, {"id": "persian", "name": "波斯猫", "emoji": "🐱", "origin": "Persian", "traits": ["高贵安静", "长毛优雅", "需要打理", "喜静不喜动", "贵族气质"], "personality": "极其安静，一天大部分时间都在睡觉或安静待着。不爱叫，不搞破坏。性格淡定从容，对周围变化反应不大。", "suitable": "适合居住环境安静、有时间打理毛发、不需要猫太活跃的家庭。适合有耐心、爱清洁的主人。", "tips": "波斯猫需要每天至少梳毛一次，否则毛发打结。面部褶皱需要定期清洁，否则容易发炎。", "active": 15, "vocal": 10, "affection": 55, "grooming": 90, "budget": 4, "child": 3, "dims": {"act": 1, "soc": 1, "voi": 1, "car": 5, "mem": 3, "pat": 4, "noz": 2, "gro": 5, "bud": 4}}, {"id": "maine", "name": "缅因猫", "emoji": "🐱", "origin": "Maine Coon", "traits": ["猫中巨无霸", "狗的习性", "友善温和", "活泼聪明", "毛发浓密"], "personality": "极其友善，对人、狗、其他猫都很友好。喜欢互动，会在你脚边跑来跑去。能学会坐下、握手等指令。", "suitable": "适合家里空间较大、喜欢大型宠物、能接受猫咪活跃度的家庭。非常适合有其他宠物的家庭。", "tips": "食量和排泄量都很大。毛发需要每周梳2-3次，掉毛量惊人。需要大型猫砂盆。", "active": 65, "vocal": 40, "affection": 80, "grooming": 65, "budget": 4, "child": 5, "dims": {"act": 4, "soc": 4, "voi": 2, "car": 3, "mem": 3, "pat": 4, "noz": 4, "gro": 4, "bud": 4}}, {"id": "usash", "name": "美国短毛猫", "emoji": "🐱", "origin": "American Shorthair", "traits": ["皮实好养", "活泼但有度", "好奇心强", "适应力强", "健康皮实"], "personality": "活泼但有分寸，好奇心强但不会太闹。喜欢和人互动，但也享受独立时光。非常聪明，学习能力强。", "suitable": "适合新手铲屎官、租房族、家里有小孩或老人的家庭。健康问题少，饲养难度低。", "tips": "美短比较贪吃，要注意控制食量防止发胖。好奇心强，家里的小物件要收好，防止误食。", "active": 55, "vocal": 25, "affection": 70, "grooming": 25, "budget": 1, "child": 5, "dims": {"act": 3, "soc": 3, "voi": 2, "car": 1, "mem": 3, "pat": 4, "noz": 3, "gro": 2, "bud": 2}}, {"id": "abyss", "name": "阿比西尼亚猫", "emoji": "🐱", "origin": "Abyssinian", "traits": ["猫中精灵", "极度活跃", "聪明好奇", "喜欢高处", "空间需求大"], "personality": "极其活跃，像永动机一样。喜欢跳到最高处巡视领地。极度好奇，任何新东西都要研究一番。社交能力不错，喜欢人。", "suitable": "适合居住空间大、有条件设置猫爬架、喜欢活泼猫咪的家庭。不适合喜欢安静、经常外出的人。", "tips": "需要大量的玩具和攀爬设施。容易无聊，无聊了会拆家。家里最好有能眺望窗外的位置。", "active": 90, "vocal": 35, "affection": 75, "grooming": 15, "budget": 3, "child": 3, "dims": {"act": 5, "soc": 4, "voi": 2, "car": 2, "mem": 2, "pat": 3, "noz": 3, "gro": 1, "bud": 3}}, {"id": "sphynx", "name": "斯芬克斯猫", "emoji": "🐱", "origin": "Sphynx", "traits": ["无毛猫", "超级怕冷", "极度粘人", "需要护肤", "社交名流"], "personality": "极度粘人，几乎像狗一样追随主人。喜欢钻被窝、趴肩膀、对人非常依赖。性格开朗，喜欢被关注。", "suitable": "适合对猫过敏但对猫毛不过敏的人（皮脂分泌较少）、居住环境温暖、有充足时间陪伴的家庭。", "tips": "没有毛发所以怕冷，冬天需要穿衣服或开暖气。皮肤需要定期擦拭清洁，耳朵也要常清理。", "active": 55, "vocal": 50, "affection": 95, "grooming": 85, "budget": 5, "child": 4, "dims": {"act": 3, "soc": 5, "voi": 3, "car": 5, "mem": 2, "pat": 4, "noz": 3, "gro": 5, "bud": 5}}, {"id": "lihua", "name": "狸花猫", "emoji": "🐱", "origin": "Chinese Li Hua", "traits": ["中国国猫", "超皮实", "独立自信", "健康少病", "自然美"], "personality": "独立自信，有自己的个性。不是特别粘人，但也不会拒绝互动。非常聪明，能记住主人。领土意识强，看家护院。", "suitable": "适合喜欢独立猫咪、工作繁忙、居住环境靠近户外（有院子或农村）的家庭。极其好养，省心省力。", "tips": "狸花精力旺盛，家养需要足够的玩具和活动空间。喜欢往外跑，农村或一楼更适合。", "active": 70, "vocal": 30, "affection": 55, "grooming": 10, "budget": 0, "child": 3, "dims": {"act": 4, "soc": 2, "voi": 2, "car": 1, "mem": 4, "pat": 2, "noz": 4, "gro": 1, "bud": 1}}, {"id": "bengal", "name": "孟加拉豹猫", "emoji": "🐱", "origin": "Bengal", "traits": ["野性外表", "豹纹花纹", "极度活跃", "高智商", "需要互动"], "personality": "极度活跃，需要大量的运动和刺激。非常聪明，可以学会各种技能。喜欢水（有些会游泳）。需要主人大量陪伴。", "suitable": "适合养猫老手、有大空间、能每天陪玩、能接受猫咪活跃度的家庭。养豹猫要有心理准备，它比很多狗都闹。", "tips": "需要每天至少1小时的高质量互动。最好提供猫跑轮、大型猫爬架。无聊了会拆家，智商高到会开门。", "active": 95, "vocal": 35, "affection": 80, "grooming": 20, "budget": 4, "child": 2, "dims": {"act": 5, "soc": 4, "voi": 2, "car": 2, "mem": 2, "pat": 2, "noz": 4, "gro": 1, "bud": 4}}, {"id": "devon", "name": "德文卷毛猫", "emoji": "🐱", "origin": "Devon Rex", "traits": ["卷毛萌物", "小丑性格", "高度粘人", "活泼好动", "怕冷"], "personality": "极其活泼好动，喜欢跳到高处然后俯冲下来。粘人度极高，喜欢躲在主人的衣服里。对所有东西都好奇。", "suitable": "适合喜欢活泼猫咪、有时间陪伴、能接受猫咪各种闹腾行为的家庭。不适合经常不在家的人。", "tips": "德文精力非常旺盛，需要大量互动和玩具。怕冷，冬天要注意保暖。毛发短不需要太多梳毛。", "active": 80, "vocal": 45, "affection": 92, "grooming": 15, "budget": 3, "child": 4, "dims": {"act": 5, "soc": 5, "voi": 3, "car": 1, "mem": 2, "pat": 3, "noz": 3, "gro": 1, "bud": 3}}, {"id": "russianblue", "name": "俄罗斯蓝猫", "emoji": "🐱", "origin": "Russian Blue", "traits": ["安静优雅", "蓝灰色毛", "羞怯内敛", "不吵不闹", "独立安静"], "personality": "安静、内敛、有点害羞慢热。对陌生人保持距离，但和主人熟悉后会展现温柔的一面。很少叫，非常安静。", "suitable": "适合喜欢安静居住环境、居住空间不大、不需要猫太粘人的家庭。适合上班族，猫会安静地等你回家。", "tips": "害羞的性格需要时间适应新环境和新人。不要强迫它社交，让它按自己的节奏来。毛发不需要特别打理。", "active": 30, "vocal": 10, "affection": 60, "grooming": 20, "budget": 2, "child": 3, "dims": {"act": 1, "soc": 1, "voi": 1, "car": 1, "mem": 4, "pat": 4, "noz": 2, "gro": 1, "bud": 3}}];
+var QUESTIONS=[{"q": "你的居住环境是？", "opts": ["宽敞的大 house，有院子或大阳台", "普通两室一厅，猫有一定活动空间", "小户型公寓，猫活动范围有限", "合租单间或经常搬家，猫空间很小"], "dims": ["act", "soc"], "vals": [[2, 0], [1, 0], [0, 0], [0, -1]]}, {"q": "你的工作/学习时间安排是？", "opts": ["朝九晚五，下班后时间自由", "经常加班或出差，在家时间不固定", "在家办公，时间自由", "学生党，课余时间比较充裕"], "dims": ["soc", "mem"], "vals": [[1, 2], [0, 0], [2, 3], [1, 1]]}, {"q": "你每天能花多少时间陪猫咪？", "opts": ["至少2小时以上，陪伴时间充足", "1-2小时，平时下班能陪会儿", "30分钟-1小时，有空就陪", "很少有空，猫主要靠自己"], "dims": ["soc", "mem"], "vals": [[3, 0], [2, 0], [1, 0], [0, 3]]}, {"q": "你更喜欢什么性格的猫？", "opts": ["安静乖巧，不太闹腾", "粘人撒娇，整天跟着你", "活泼好动，家里充满活力", "高冷傲娇，互不打扰"], "dims": ["act", "soc"], "vals": [[0, 0], [1, 3], [3, 1], [0, 0]]}, {"q": "你家的噪音情况是？", "opts": ["安静社区，邻里和睦，没什么噪音", "正常居家环境，偶尔有声响", "靠近马路边，有些噪音", "家里经常有人聚会或开party"], "dims": ["noz", "pat"], "vals": [[0, 0], [1, 1], [2, 2], [3, 3]]}, {"q": "对于猫咪乱抓家具，你？", "opts": ["完全无法接受，必须从小训练", "可以接受一点，猫有磨爪需求", "家具不值钱，猫开心就好", "家里已经有被猫抓过的痕迹"], "dims": ["pat", "act"], "vals": [[0, 0], [2, 1], [3, 2], [3, 3]]}, {"q": "猫咪需要每天梳毛打理，你愿意吗？", "opts": ["每天梳毛没问题，我享受这个过程", "偶尔梳一下，可以接受", "希望猫自己打理好，不需要我管", "长毛猫太麻烦了，短毛就行"], "dims": ["gro", "car"], "vals": [[3, 3], [2, 2], [1, 0], [0, -1]]}, {"q": "每月养猫预算大概多少？", "opts": ["预算充足，愿意为猫花钱", "中等预算，猫粮猫砂正常开销", "预算有限，能省则省", "希望猫花销越低越好，土猫最省钱"], "dims": ["bud"], "vals": [[3], [1], [0], [-1]]}, {"q": "你家里有小孩或其他宠物吗？", "opts": ["有小孩，需要猫对孩子友好", "家里有其他宠物（狗/猫）", "孩子比较大了，懂事的那种", "目前独居，就我一个人"], "dims": ["soc", "pat"], "vals": [[3, 3], [2, 2], [1, 1], [0, 0]]}, {"q": "你经常需要出差或外出过夜吗？", "opts": ["基本不出差，每天都能回家", "偶尔出差，最多1-2天", "经常出差，3-5天不在家", "经常外出旅行，猫要能独自待几天"], "dims": ["mem"], "vals": [[3], [1], [0], [-1]]}, {"q": "你更喜欢什么毛长的猫？", "opts": ["短毛就够了，好打理", "无所谓，长短都行", "就喜欢长毛猫，优雅好看", "对毛发过敏，长毛不行"], "dims": ["gro", "car"], "vals": [[0, 0], [1, 1], [2, 3], [0, -1]]}, {"q": "猫咪如果话很多、经常叫，你？", "opts": ["猫爱叫很正常，我很喜欢", "声音不太吵就行，可以接受", "希望猫安静点，不喜欢太吵", "完全无法接受，必须安静"], "dims": ["voi"], "vals": [[3], [1], [0], [-1]]}, {"q": "如果猫咪生病了，你需要带它去看兽医，你的态度是？", "opts": ["愿意花费较多医疗费用，猫是家人", "花必要的钱，但不会过度医疗", "预算有限，尽量低成本治疗", "如果花费太大，可能会考虑…"], "dims": ["bud", "pat"], "vals": [[3, 3], [1, 2], [0, 0], [-1, -1]]}, {"q": "你希望猫咪的体型是？", "opts": ["大型猫，抱起来像抱狗一样", "中型猫，体型适中就好", "小巧一点，方便抱在怀里", "无所谓，大小都行"], "dims": ["act", "soc"], "vals": [[1, 1], [0, 1], [-1, 0], [0, 0]]}, {"q": "猫咪有时候会不小心弄乱你的东西，你？", "opts": ["可以理解，提前收好贵重物品", "小抓小闹能忍，大问题要纠正", "有点崩溃，需要猫听话", "完全接受不了，猫不能乱动东西"], "dims": ["pat"], "vals": [[3], [1], [0], [-2]]}, {"q": "你养猫的主要目的是？", "opts": ["陪伴，是生活的重要精神寄托", "喜欢猫，单纯觉得可爱", "有猫陪伴就行，不用太粘人", "猫可以独立些，我给它空间"], "dims": ["soc", "mem"], "vals": [[3, 0], [2, 0], [0, 1], [0, 3]]}];
+var TOTAL=16,cur=0,pool=[],answers=[];
+var dimScores=[0,0,0,0,0,0,0,0,0],dimMaxes=[0,0,0,0,0,0,0,0,0];
+var dimMap={act:0,soc:1,voi:2,car:3,mem:4,pat:5,noz:6,gro:7,bud:8};
+var dimRanges=[["d-a",0,3],["d-b",3,6],["d-c",6,9],["d-d",9,12],["d-e",12,16]];
+var DIMS=["act","soc","voi","car","mem","pat","noz","gro","bud"];
+var $={},_s=function(id){return document.getElementById(id);};
+function shuffle(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr.slice();}
+function showPage(id){
+  ["startPage","qPage","resPage"].forEach(function(p){var el=_s(p);if(el){if(p===id&&p==="resPage")el.className="page res on show";else if(p===id)el.className="page on";else el.className="page";}});
+}
+function buildPawBg(){
+  var bg=_s("pawBg");if(!bg)return;
+  var pos=[["5%","8%"],["88%","12%"],["12%","75%"],["82%","80%"],["50%","20%"],["35%","88%"],["70%","45%"],["22%","45%"],["60%","60%"],["15%","35%"]];
+  for(var i=0;i<10;i++){var el=document.createElement("div");el.className="paw";el.innerHTML="&#x1F43E;";el.style.left=pos[i][0];el.style.top=pos[i][1];el.style.animationDelay=(i*1.1)+"s";el.style.fontSize=(22+Math.random()*16)+"px";bg.appendChild(el);}
+}
+function startTest(){
+  pool=shuffle(QUESTIONS).slice(0,TOTAL);
+  answers=new Array(TOTAL).fill(null);
+  dimScores=[0,0,0,0,0,0,0,0,0];dimMaxes=[0,0,0,0,0,0,0,0,0];
+  cur=0;showPage("qPage");renderQ();updateProgress();highlightDims();
+}
+function renderQ(){
+  var q=pool[cur];
+  _s("qNum").textContent="问题 "+(cur+1)+" / "+TOTAL;
+  _s("qTxt").textContent=q.q;
+  var ctn=_s("optsCtn");ctn.innerHTML="";
+  q.opts.forEach(function(opt,i){
+    var div=document.createElement("div");
+    div.className="opt"+(answers[cur]===i?" sel":"");
+    div.innerHTML="<div class=opt-letter>选项 "+(i+1)+"</div><div class=opt-text>"+opt+"</div>";
+    div.addEventListener("click",function(){answers[cur]=i;renderQ();_s("nextBtn").disabled=false;updateProgress();highlightDims();});
+    ctn.appendChild(div);
+  });
+  _s("prevBtn").disabled=cur===0;
+  var nb=_s("nextBtn");
+  nb.disabled=answers[cur]===null;
+  if(cur===TOTAL-1){nb.textContent="查看结果";nb.onclick=function(){showResult();};}
+  else{nb.textContent="下一题 \u2192";nb.onclick=function(){nextQ();};}
+}
+function nextQ(){if(cur<TOTAL-1){cur++;renderQ();}}
+function prevQ(){if(cur>0){cur--;renderQ();}}
+function updateProgress(){
+  var done=answers.filter(function(v){return v!==null;}).length;
+  _s("pFill").style.width=(done/TOTAL*100)+"%";
+  _s("pLbl").textContent=done+" / "+TOTAL+" 题";
+}
+function highlightDims(){
+  dimRanges.forEach(function(r){var el=_s(r[0]);if(!el)return;el.classList.remove("active","done");if(cur+1>=r[1]&&cur+1<=r[2])el.classList.add("active");if(cur+1>r[2])el.classList.add("done");});
+}
+function showResult(){calcResult();showPage("resPage");}
+function calcResult(){
+  dimScores=[0,0,0,0,0,0,0,0,0];dimMaxes=[0,0,0,0,0,0,0,0,0];
+  pool.forEach(function(q,i){
+    if(answers[i]===null)return;
+    var vals=q.vals[answers[i]];if(!vals)return;
+    q.dims.forEach(function(dim,di){var di2=dimMap[dim];if(di2>=0&&di2<9){var v=Math.max(0,vals[di]||0);dimScores[di2]+=v;dimMaxes[di2]+=3;}});
+  });
+  function norm(s,m){return m>0?Math.min(5,(s/m)*5):0;}
+  var ua={};
+  DIMS.forEach(function(key,i){ua[key]=norm(dimScores[i],dimMaxes[i]);});
+  var catScores=CATS.map(function(cat){
+    var d=cat.dims||{};
+    var actS=1-Math.min(1,Math.abs((ua.act||0)-(d.act||0))/5);
+    var socS=1-Math.min(1,Math.abs((ua.soc||0)-(d.soc||0))/5);
+    var voiS=1-Math.min(1,Math.abs((ua.voi||0)-(d.voi||0))/5);
+    var carS=1-Math.min(1,Math.abs((ua.car||0)-(d.car||0))/5);
+    var memS=1-Math.min(1,Math.abs((ua.mem||0)-(d.mem||0))/5);
+    var patS=1-Math.min(1,Math.abs((ua.pat||0)-3)/3);
+    var nozS=(ua.noz||0)>=(d.noz||0)?1:(ua.noz||0)/Math.max(0.1,d.noz||0.1);
+    var groS=(ua.gro||0)>=(d.gro||0)?1:(ua.gro||0)/Math.max(0.1,d.gro||0.1);
+    var budS=(ua.bud||0)>=(d.bud||0)?1:(ua.bud||0)/Math.max(0.1,d.bud||0.1);
+    var total=(actS*0.12+socS*0.2+voiS*0.08+carS*0.1+memS*0.15+patS*0.1+nozS*0.05+groS*0.1+budS*0.1)*100;
+    return{total:Math.round(total*10)/10,cat:cat};
+  });
+  catScores.sort(function(a,b){return b.total-a.total;});
+  var top3=catScores.slice(0,3);
+  _s("rTitle").textContent=top3[0].cat.name;
+  _s("rSub").textContent="般适合："+((top3[0].cat.suitable||"").substring(0,50))+"...";
+  var BL=["极低","低","中等","中高","高"];
+  var BW=["20%","40%","60%","75%","90%","100%"];
+  var CW=["20%","40%","60%","80%","100%"];
+  var rankingEl=_s("catRanking");rankingEl.innerHTML="";
+  top3.forEach(function(item,idx){
+    var cat=item.cat,rank=idx+1,pct=Math.round(item.total);
+    var card=document.createElement("div");
+    card.className="rank-card rank-"+rank;
+    var dimData=[
+      ["活泼度",String(cat.active||0)+"%","#E8701A"],
+      ["话痨度",String(cat.vocal||0)+"%","#FF6B9D"],
+      ["粘人度",String(cat.affection||0)+"%","#FF9E5E"],
+      ["打理需求",String(cat.grooming||0)+"%","#4A9E5C"],
+      ["预算",BL[cat.budget||0]||"中等","#5B8BD4"],
+      ["儿童友好",String(cat.child||0)+"星","#FFB347"]
+    ];
+    var dimHtml="";
+    dimData.forEach(function(di){
+      var w=di[0]==="预算"?BW[cat.budget||0]:di[0]==="儿童友好"?CW[cat.child||0]:di[1];
+      dimHtml+="<div class=dim-item><div class=dim-lbl>"+di[0]+"</div><div class=dim-bar-bg><div class=dim-bar-fill style=\"background:"+di[2]+";width:"+w+"\"></div></div></div>";
+    });
+    var tagsHtml="";
+    (cat.traits||[]).forEach(function(t){tagsHtml+="<span class=detail-tag>"+t+"</span>";});
+    card.innerHTML="<div class=rank-header><div class=rank-badge>"+rank+"</div><div class=rank-info><div class=rank-cat-name>"+cat.emoji+" "+cat.name+"</div><div class=rank-cat-origin>"+cat.origin+"</div></div><div class=rank-score-row><div><div class=rank-score>"+pct+"<span style=\"font-size:13px;font-weight:400;color:var(--text-dim)\">%</span></div><div class=rank-pct>匹配度</div></div><div class=expand-icon>\u25BC</div></div></div><div class=score-bar-bg><div class=score-bar-fill style=\"width:0%\"></div></div><div class=rank-detail><div class=detail-tags>"+tagsHtml+"</div><div class=detail-section><div class=detail-section-title>&#x1F43E; 性格特点</div><div class=detail-section-content>"+(cat.personality||"")+"</div></div><div class=detail-section><div class=detail-section-title>&#x1F3E0; 适合环境</div><div class=detail-section-content>"+(cat.suitable||"")+"</div></div><div class=detail-section><div class=detail-section-title>&#x1F421; 养护建议</div><div class=detail-section-content>"+(cat.tips||"")+"</div></div><div class=rank-dim-grid>"+dimHtml+"</div></div>";
+    card.addEventListener("click",function(){card.classList.toggle("expanded");});
+    rankingEl.appendChild(card);
+    setTimeout(function(){var bar=card.querySelector(".score-bar-fill");if(bar)bar.style.width=pct+"%";},300+idx*150);
+  });
+}
+function restart(){
+  showPage("startPage");
+  _s("pFill").style.width="0%";
+  _s("pLbl").textContent="0 / "+TOTAL+" 题";
+  dimRanges.forEach(function(r){var el=_s(r[0]);if(el)el.classList.remove("active","done");});
+}
+_s("startBtn").addEventListener("click",startTest);
+_s("prevBtn").addEventListener("click",prevQ);
+_s("restartBtn").addEventListener("click",restart);
+buildPawBg();
+</script>
+</body>
+</html>
